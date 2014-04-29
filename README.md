@@ -54,7 +54,7 @@ The Puppet OpenShift module is designed to work in Foreman on systems classified
 - Host Group (Environment) / OSE Nodes / Medium
 - Host Group (Environment) / OSE Nodes / (additional node profiles)
 
-Each "Host Group" should indicate a logical separation of Brokers, BSNs, and each Node profile (e.g. small, medium).  Each host should be added to one of these groups.  Doing so allows you to override Class Paramaters that are specific to each host role.
+Each "Host Group" should indicate a logical separation of Brokers, BSNs, and each Node profile (e.g. small, medium).  Each host should be added to one of these groups.  Doing so allows you to override Class Parameters that are specific to each host role.
 
 
 # Module installation #
@@ -65,25 +65,25 @@ Once copied, refresh Foreman's view of the environment with Configure -> Puppet 
 
 Once refreshed, attach the 'openshift' module to the Primary Environment Name, represented as a Host Group.
 
-After the 'openshift' module has been attached, Class Parameters can be specified as Smart Class Paramaters and assigned to the 
+After the 'openshift' module has been attached, Class Parameters can be specified as Smart Class Parameters and assigned to the 
 
 
 # Module configuration #
 
-The OpenShift Module relies heavily on Paramaterized Classes.  These classes can take paramaterized arguments of configuration directives to specify functions and operations of the OpenShift module.  A complete list of these paramaters can be found inside the openshift/manifests/init.pp manifest file, listed as arguments of the 'openshift' class itself.
+The OpenShift Module relies heavily on Paramaterized Classes.  These classes can take paramaterized arguments of configuration directives to specify functions and operations of the OpenShift module.  A complete list of these parameters can be found inside the openshift/manifests/init.pp manifest file, listed as arguments of the 'openshift' class itself.
 
-Additionally, a list of each Foreman-interpreted paramater, along with the paramater name, setting, type, default value and additional notes can be found in the 'paramaters.txt' file.
+Additionally, a list of each Foreman-interpreted paramater, along with the paramater name, setting, type, default value and additional notes can be found in the 'parameters.txt' file.
 
-Each of these paramaters can be overwritten in Foreman's Puppet Class, Smart Class Paramater interface.  To set a specific paramater, use the following procedure:
+Each of these parameters can be overwritten in Foreman's Puppet Class, Smart Class Paramater interface.  To set a specific paramater, use the following procedure:
 
 1. Navigate to the Smart Class Paramater tab for the 'openshift' module
-  a. Configure -> Puppet Classes -> 'openshift' -> Smart Class Paramaters
+  a. Configure -> Puppet Classes -> 'openshift' -> Smart Class Parameters
 2. Select the Paramater on the left that you wish to override
 3. Click the 'Override' check box
 4. ...
 5. ...  
 
-All of the Class paramaters should be evaluated and set on a per-Host Group basis, with the exception of the following.  The following Paramaters should be set on a per-Node group basis, corresponding to a specific Node Profile:
+All of the Class parameters should be evaluated and set on a per-Host Group basis, with the exception of the following.  The following Parameters should be set on a per-Node group basis, corresponding to a specific Node Profile:
 - openshift cpu cfs quota us
 - openshift cpu shares
 - openshift memory limit in bytes
@@ -92,7 +92,7 @@ All of the Class paramaters should be evaluated and set on a per-Host Group basi
 - openshift tc max bandwidth
 - openshift tc user share
 
-Four special Class Paramaters exist to designate the purpose of a Host.  They can be set on a per-Host group basis.  The following are true/false Paramaters which define the purpose of a system, e.g. Broker, Node, BSN and/or Console:
+Four special Class Parameters exist to designate the purpose of a Host.  They can be set on a per-Host group basis.  The following are true/false Parameters which define the purpose of a system, e.g. Broker, Node, BSN and/or Console:
 - broker
 - node
 - bsn
@@ -126,9 +126,9 @@ The OpenShift Console should also be available at a URL which is that of a Broke
 
 # Extending the module #
 
-Additional configuration items and Paramaters will be desired as the number of deployments increase and familiarity of OpenShift as a whole grows.  It is anticipated that most of these additional items will be implemented in the form of template changes.  Simple knowledge of ERB will be required to implement this, though plenty of examples of simple ERB variable substitution and array walking exists throughout the code base.  These changes are found in the 'templates/' directory of each module.
+Additional configuration items and Parameters will be desired as the number of deployments increase and familiarity of OpenShift as a whole grows.  It is anticipated that most of these additional items will be implemented in the form of template changes.  Simple knowledge of ERB will be required to implement this, though plenty of examples of simple ERB variable substitution and array walking exists throughout the code base.  These changes are found in the 'templates/' directory of each module.
 
-To add Paramaters, study the contents and flow of the openshift/manifests/init.pp manifest.  Assign a new Paramater where the other Paramaters are located, and follow the flow of Class calls and respective arguments to make the variables interoperable from within a template.  
+To add Parameters, study the contents and flow of the openshift/manifests/init.pp manifest.  Assign a new Paramater where the other Parameters are located, and follow the flow of Class calls and respective arguments to make the variables interoperable from within a template.  
 
 
 
