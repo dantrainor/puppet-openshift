@@ -1,0 +1,32 @@
+class openshift::params {
+
+	$activemq_host					= ''
+	$mongo_host					= ''
+	$mongo_port					= '27017'
+	$activemq_port					= '61613'
+	$mongo_user					= ''
+	$mongo_pass					= ''
+	$mongo_db					= ''
+	$activemq_user					= ''
+	$activemq_pass					= ''
+	$env_name					= ''
+	$bind_server					= ''
+	$bind_port					= '53'
+	$bind_zone					= ''
+	$bind_keyvalue					= ''
+	$session_secret					= 'ftJYMpkntDFIrlRznAYDY91CgH7UrJZrj3b4pfxdl7CB5Hanj8Q9MbYTz8Gng9O+'
+	$auth_salt					= 'ftJYMpkntDFIrlRznAYDY91CgH7UrJZrj3b4pfxdl7CB5Hanj8Q9MbYTz8Gng9O+'
+	$broker_host					= ''
+	$gear_min_uid					= '15000'
+	$gear_max_uid					= '16999'
+	$districts_max_capacity				= '2000'
+	$districts_first_uid				= '15001'
+	$mcollective_timeout				= '360'
+	$activemq_peers					= ''
+	$cloud_domain					= ''
+	$activemq_topic					= ''
+	$bind_krb_principal				= ''
+	$bind_krb_keytab				= '/etc/dns.keytab'
+
+
+}

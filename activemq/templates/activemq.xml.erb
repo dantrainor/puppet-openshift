@@ -1,0 +1,212 @@
+<!--
+    Licensed to the Apache Software Foundation (ASF) under one or more
+    contributor license agreements.  See the NOTICE file distributed with
+    this work for additional information regarding copyright ownership.
+    The ASF licenses this file to You under the Apache License, Version 2.0
+    (the "License"); you may not use this file except in compliance with
+    the License.  You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+<beans
+  xmlns="http://www.springframework.org/schema/beans"
+  xmlns:amq="http://activemq.apache.org/schema/core"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd
+  http://activemq.apache.org/schema/core http://activemq.apache.org/schema/core/activemq-core.xsd">
+
+    <!-- Allows us to use system properties as variables in this configuration file -->
+<% if @webconsole_real -%>
+    <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+        <property name="locations">
+            <value>file:${activemq.base}/conf/credentials.properties</value>
+        </property>
+    </bean>
+
+<% end -%>
+
+    <!--
+        The <broker> element is used to configure the ActiveMQ broker.
+    -->
+    <broker xmlns="http://activemq.apache.org/schema/core"
+	    brokerName="<%= @fqdn %>"
+	    dataDirectory="${activemq.data}"
+            schedulePeriodForDestinationPurge="60000">
+        <!--
+            For better performances use VM cursor and small memory limit.
+            For more information, see:
+            http://activemq.apache.org/message-cursors.html
+        -->
+
+        <destinationPolicy>
+            <policyMap>
+              <policyEntries>
+                <!--
+                    The Puppet Labs documentation for MCollective
+                    advises disabling producerFlowControl for all
+                    topics in order to avoid MCollective servers
+                    appearing blocked during heavy traffic.
+
+                    For more information, see:
+                    http://docs.puppetlabs.com/mcollective/deploy/middleware/activemq.html
+                -->
+		<policyEntry topic=">" producerFlowControl="false" />
+                <!--
+                  The Puppet Labs documentation advises enabling
+                  garbage-collection of queues because MCollective
+                  creates a uniquely named, single-use queue for
+                  each reply.
+
+                  For more information, see:
+                  http://docs.puppetlabs.com/mcollective/deploy/middleware/activemq.html
+                -->
+                <policyEntry queue="*.reply.>" gcInactiveDestinations="true" inactiveTimoutBeforeGC="300000" />
+              </policyEntries>
+            </policyMap>
+        </destinationPolicy>
+
+
+        <!--
+            The managementContext is used to configure how ActiveMQ is exposed in
+            JMX. By default, ActiveMQ uses the MBean server that is started by
+            the JVM. For more information, see:
+
+            http://activemq.apache.org/jmx.html
+        -->
+        <managementContext>
+            <managementContext createConnector="false"/>
+        </managementContext>
+
+        <!--
+            Configure message persistence for the broker. The default persistence
+            mechanism is the KahaDB store (identified by the kahaDB tag).
+            For more information, see:
+
+            http://activemq.apache.org/persistence.html
+        -->
+        <persistenceAdapter>
+            <kahaDB directory="${activemq.data}/kahadb"/>
+        </persistenceAdapter>
+
+	<networkConnectors>
+<% openshift_activemq_host_array = @openshift_activemq_host.split(',') %>
+<% openshift_activemq_host_array.each do | activemq_peer | -%>
+<% if activemq_peer != @fqdn %>
+                <networkConnector name="<%= @fqdn -%>-<%= activemq_peer -%>" duplex="true" uri="static:(tcp://<%= activemq_peer -%>:61616)" userName="<%= @openshift_activemq_user %>" password="<%= @openshift_activemq_pass %>">
+                        <staticallyIncludedDestinations>
+                                <topic physicalName="mcollective.openshift.reply"/>
+                                <topic physicalName="mcollective.discovery.reply"/>
+                        </staticallyIncludedDestinations>
+                </networkConnector>
+<% end -%>
+<% end -%>
+
+	</networkConnectors>
+
+        <!-- add users for mcollective -->
+
+        <plugins>
+          <statisticsBrokerPlugin/>
+          <simpleAuthenticationPlugin>
+             <users>
+<!--               <authenticationUser username="mcollective" password="marionette" groups="mcollective,everyone"/>	-->
+               <authenticationUser username="admin" password="secret" groups="mcollective,admin,everyone"/>
+               <authenticationUser username="<%= @openshift_activemq_user %>" password="<%= @openshift_activemq_pass %>" groups="<%= @openshift_activemq_topic %>,admins,mcollective,everyone"/>
+             </users>
+          </simpleAuthenticationPlugin>
+          <authorizationPlugin>
+            <map>
+              <authorizationMap>
+                <authorizationEntries>
+                  <authorizationEntry queue=">" write="admins" read="admins" admin="admins" />
+                  <authorizationEntry topic=">" write="admins" read="admins" admin="admins" />
+                  <authorizationEntry topic="mcollective.>" write="mcollective" read="mcollective" admin="mcollective" />
+                  <authorizationEntry queue="mcollective.>" write="mcollective" read="mcollective" admin="mcollective" />
+                  <authorizationEntry topic="ActiveMQ.Advisory.>" read="everyone" write="everyone" admin="everyone"/>
+
+                  <authorizationEntry queue=">" write="admins" read="admins" admin="admins" />
+                  <authorizationEntry topic=">" write="admins" read="admins" admin="admins" />
+                  <authorizationEntry topic="<%= @openshift_activemq_topic %>.>" write="<%= @openshift_activemq_user %>" read="<%= @openshift_activemq_user %>" admin="<%= @openshift_activemq_user %>" />
+                  <authorizationEntry queue="<%= @openshift_activemq_topic %>.>" write="<%= @openshift_activemq_user %>" read="<%= @openshift_activemq_user %>" admin="<%= @openshift_activemq_user %>" />
+                  <authorizationEntry topic="ActiveMQ.Advisory.>" read="everyone" write="everyone" admin="everyone"/>
+
+		  <authorizationEntry queue="<%= @openshift_activemq_topic %>.>" write="admins,<%= @openshift_activemq_user %>" read="admins,<%= @openshift_activemq_user %>" admin="admins,<%= @openshift_activemq_user %>" />
+		  <authorizationEntry topic="<%= @openshift_activemq_topic %>.>" write="admins,<%= @openshift_activemq_user %>" read="admins,<%= @openshift_activemq_user %>" admin="admins,<%= @openshift_activemq_user %>" />
+		  <authorizationEntry queue="<%= @openshift_activemq_topic %>.nodes" read="servers,<%= @openshift_activemq_user %>" admin="servers,<%= @openshift_activemq_user %>" />
+		  <authorizationEntry queue="<%= @openshift_activemq_topic %>.reply.>" write="servers,<%= @openshift_activemq_user %>" admin="servers,<%= @openshift_activemq_user %>" />
+		  <authorizationEntry topic="<%= @openshift_activemq_topic %>.*.agent" read="servers,<%= @openshift_activemq_user %>" admin="servers,<%= @openshift_activemq_user %>" />
+		<authorizationEntry topic="<%= @openshift_activemq_topic %>.registration.agent" write="servers,<%= @openshift_activemq_user %>" read="servers,<%= @openshift_activemq_user %>" admin="servers,<%= @openshift_activemq_user %>" />
+
+
+                </authorizationEntries>
+              </authorizationMap>
+            </map>
+          </authorizationPlugin>
+        </plugins>
+
+          <!--
+            The systemUsage controls the maximum amount of space the broker will
+            use before slowing down producers. For more information, see:
+            http://activemq.apache.org/producer-flow-control.html
+            If using ActiveMQ embedded - the following limits could safely be used:
+
+        <systemUsage>
+            <systemUsage>
+                <memoryUsage>
+                    <memoryUsage limit="20 mb"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="1 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="100 mb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+        -->
+          <systemUsage>
+            <systemUsage sendFailIfNoSpaceAfterTimeout="3000">
+                <memoryUsage>
+                    <memoryUsage limit="96 mb"/>
+                </memoryUsage>
+                <storeUsage>
+                    <storeUsage limit="10 gb"/>
+                </storeUsage>
+                <tempUsage>
+                    <tempUsage limit="1536 gb"/>
+                </tempUsage>
+            </systemUsage>
+        </systemUsage>
+        <!--
+            The transport connectors expose ActiveMQ over a given protocol to
+            clients and other brokers. For more information, see:
+
+            http://activemq.apache.org/configuring-transports.html
+        -->
+        <transportConnectors>
+            <transportConnector name="openwire" uri="tcp://0.0.0.0:61616"/>
+            <transportConnector name="openwire+ssl" uri="ssl://0.0.0.0:61617?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600&amp;needClientAuth=true"/>
+            <transportConnector name="amqp" uri="amqp://0.0.0.0:5672?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="amqp+ssl" uri="amqp+ssl://0.0.0.0:5671?maximumConnections=1000&amp;wireFormat.maxFrameSize=104857600"/>
+            <transportConnector name="stomp" uri="stomp://0.0.0.0:61613"/>
+        </transportConnectors>
+
+    </broker>
+
+    <!--
+        Enable web consoles, REST and Ajax APIs and demos
+
+        Take a look at ${ACTIVEMQ_HOME}/conf/jetty.xml for more details
+    -->
+<% if @webconsole_real -%>
+      <import resource="jetty.xml"/>
+<% end -%>
+
+</beans>
+<!-- END SNIPPET: example -->

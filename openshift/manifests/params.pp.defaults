@@ -1,0 +1,33 @@
+class openshift::params (
+
+	$activemq_host					= [ [ "bsn01.openshift06.home.lab.dtrainor.local"] ],
+	$mongo_host					= [ [ "bsn01.openshift06.home.lab.dtrainor.local"] ],
+	$mongo_port					= "27017",
+	$activemq_port					= "61613",
+	$mongo_user					= "openshift_user_production",
+	$mongo_pass					= "openshift_pass_production",
+	$mongo_db					= "openshift_broker_production",
+	$activemq_user					= "mcollective",
+	$activemq_pass					= "marionette",
+	$openshift_env_name				= "openshift06",
+	$bind_server					= "10.16.0.200",
+	$bind_port					= "53",
+	$bind_zone					= "openshift06.home.lab.dtrainor.local",
+	$bind_keyname					= "openshift05.home.lab.dtrainor.local",
+	$bind_keyvalue					= "kQxSWIRIZ0tiBy26Aw==",
+	$session_secret					= "ftJYMpkntDFIrlRznAYDY91CgH7UrJZrj3b4pfxdl7CB5Hanj8Q9MbYTz8Gng9O+",
+	$auth_salt					= "ftJYMpkntDFIrlRznAYDY91CgH7UrJZrj3b4pfxdl7CB5Hanj8Q9MbYTz8Gng9O+",
+	$broker_host					= "broker01.openshift06.home.lab.dtrainor.local",
+	$gear_min_uid					= "15001",
+	$gear_max_uid					= "16999",
+	$districts_max_capacity				= "2000",
+	$districts_first_uid				= "15001",
+	$mcollective_timeout				= "360",
+	$activemq_peers					= [ ["bsn01.openshift06.home.lab.dtrainor.local","peer1userrrrrr","peer1passsssss"], ["bsn02.openshift06.home.lab.dtrainor.local","peer2useerrrrrrr", "peer2passsssss"] ],
+	$cloud_domain					= "openshift06.home.lab.dtrainor.local",
+	$activemq_topic					= "footopic",
+
+
+
+) {
+}

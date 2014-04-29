@@ -1,0 +1,30 @@
+topicprefix = /topic/
+main_collective = <%= @openshift_activemq_topic %>
+collectives = <%= @openshift_activemq_topic %>
+libdir = /opt/rh/ruby193/root/usr/libexec/mcollective/
+logfile = /var/log/openshift/ruby193-mcollective.log
+loglevel = debug
+registerinterval = 30
+daemonize = 1
+direct_addressing = 1
+
+# Plugins
+securityprovider = psk
+plugin.psk = 8723hr8723hr2hr89hr93hta89ht8a3h4tg3hg
+
+connector = activemq
+
+<% openshift_activemq_host_array = @openshift_activemq_host.split(',') %>
+plugin.activemq.pool.size = <%= openshift_activemq_host_array.count %>
+<% openshift_activemq_host_array.each_with_index do |server,index| -%>
+plugin.activemq.pool.<%= index + 1 %>.host = <%= server %>
+plugin.activemq.pool.<%= index + 1 %>.port = <%= @openshift_activemq_port %>
+plugin.activemq.pool.<%= index + 1 %>.user = <%= @openshift_activemq_user %>
+plugin.activemq.pool.<%= index + 1 %>.password = <%= @openshift_activemq_pass %>
+
+<% end -%>
+
+# Facts
+factsource = yaml
+plugin.yaml = /opt/rh/ruby193/root/etc/mcollective/facts.yaml
+

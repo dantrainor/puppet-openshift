@@ -1,0 +1,26 @@
+# Settings related to the nsupdate variant of an OpenShift DNS plugin
+
+# The DNS server
+BIND_SERVER="<%= @openshift_bind_server -%>"
+
+# The DNS server's port
+BIND_PORT=<%= @openshift_bind_port -%>
+
+# The base zone for the DNS server
+BIND_ZONE="<%= @openshift_bind_zone -%>"
+
+#
+# Authentication information
+#
+# Provide either TSIG or GSS-TSIG information, but not both
+
+# TSIG authentication
+#
+#BIND_KEYNAME=""
+#BIND_KEYVALUE=""
+#BIND_KEYVALUE=(HMAC-MD5|HMAC-SHA1|HMAC-SHA256|HMAC-512) # Default: HMAC-MD5
+
+# GSS-TSIG (Kerberos) Authentication
+BIND_KRB_PRINCIPAL="<%= @openshift_bind_krb_principal -%>"
+BIND_KRB_KEYTAB="<%= @openshift_bind_krb_keytab -%>"
+
