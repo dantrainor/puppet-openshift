@@ -1,0 +1,52 @@
+Paramaters:
+
+Name					Set	Type		Default value	Notes
+				
+broker					N/A	true/false	false		'Set' based on purpose of node
+bsn					N/A	true/false	false		'Set' based on purpose of node
+console					N/A	true/false	false		'Set' based on purpose of node
+node					N/A	true/false	false		'Set' based on purpose of node
+openshift activemq host			Y	string		none		Set to the hostname of the BSN
+openshift activemq pass			Y	string		none		Set to username to use for activemq
+openshift activemq port			N	string		61613		Set to port to use for activemq
+openshift activemq topic		Y	string		none		Set to topic to use for activemq
+openshift activemq user			Y	string		none		Set to user to use for activemq
+openshift auth salt			Y	string		none		Gerenate with: openssl rand -base64 64
+openshift bind keyvalue			N	string		none		Bind key value
+openshift bind krb keytab		Y	string		none		Path to keytab file
+openshift bind krb principal		Y	string		none		KRB principal to use for Keytab file above
+openshift bind port			N	string		53		BIND port
+openshift bind server			Y	string		none		Set to nameserver that owns cloud domain zone
+openshift bind zone			Y	string		none		Set to cloud domain
+openshift broker host			Y	string		none		Set to broker hostname
+openshift cloud domain			Y	string		none		Set to cloud domain, not necessarily same as 'openshift bind zone'
+openshift cpu cfs quota us		Y	string		none		Set to CFS quota (associate with Node Profile/hostgroup)
+openshift cpu shares			Y	string		none		Set to CPU shares (associate with Node Profile/hostgroup)
+openshift districts first uid		N	string		none		Set to first ID used for Districts
+openshift districts max capacity	N	string		2000		Set to gear max capacity per district
+openshift env name			N	string		none		Set to short name of OSE environment, e.g. 'osetest'
+openshift gear max uid			N	string		16999		Set to max UID to use for gear creation
+openshift gear min uid			N	string		15001		Set to min UID to use for gear creation
+openshift mcollectimve timeout		N	string		360		Set to timeout that MCO waits for node operations
+openshift memory limit in bytes		Y	string		536870912	Set to gear memory limit (associate with Node Profile/hostgroup)
+openshift memory memsw limit in bytes	Y	string		641728512	Set to gear swap memory limit (associate with Node Profile/hostgroup)
+openshift mongo db			Y	string		none		Set to mongo database name, manually created in Mongo
+openshift mongo host			Y	string		none		Set to the hostname of the BSN
+openshift mongo pass			Y	string		none		Set to user to use for mongo, manually created in Mongo
+openshift mongo user			Y	string		none		Set to pass to use for mongo, manually created in Mongo
+openshift node profile			Y	string		none		Node profile to assign to node (associate with Node Profile/hostgroup)
+openshift session secret		Y	string		none		Create with 'openssl rand -hex 64'
+openshift tc max bandwidth		Y	string		800		Set to tc max bandwidth (associate with Node Profile/hostgroup or entire env)
+openshift tc user share			Y	string		2		Set to tc max user share (associate with Node Profile/hostgroup or entire env)
+openshift valid gear sizes		Y	comma string	small,medium	Set to all available valid gear sizes
+
+
+
+
+
+
+
+
+
+
+
