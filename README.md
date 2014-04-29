@@ -76,11 +76,12 @@ Additionally, a list of each Foreman-interpreted paramater, along with the param
 
 Each of these paramaters can be overwritten in Foreman's Puppet Class, Smart Class Paramater interface.  To set a specific paramater, use the following procedure:
 
-1)  Navigate to the Smart Class Paramater tab for the 'openshift' module
-1a) Configure -> Puppet Classes -> 'openshift' -> Smart Class Paramaters
-2)  Select the Paramater on the left that you wish to override
-3)  Click the 'Override' check box
-4)  
+1. Navigate to the Smart Class Paramater tab for the 'openshift' module
+  a. Configure -> Puppet Classes -> 'openshift' -> Smart Class Paramaters
+2. Select the Paramater on the left that you wish to override
+3. Click the 'Override' check box
+4. ...
+5. ...  
 
 All of the Class paramaters should be evaluated and set on a per-Host Group basis, with the exception of the following.  The following Paramaters should be set on a per-Node group basis, corresponding to a specific Node Profile:
 - openshift cpu cfs quota us
@@ -102,10 +103,10 @@ Four special Class Paramaters exist to designate the purpose of a Host.  They ca
 
 Due to the volatile nature of databases as a whole, the Mongo installation on the BSN must be initialized by hand.  This process involves creating a new Mongo schema and assigning a username and password to the schema.  The following steps must be preformed after the BSN components are installed, on the BSN itself:
 
-# mongo
-> use <given mongo schema name of environment>
-> db.addUser("<given mongo user name of environment>","<given mongo password of environment>")
-^D
+	# mongo
+	> use <given mongo schema name of environment>
+	> db.addUser("<given mongo user name of environment>","<given mongo password of environment>")
+	^D
 
 
 # Final steps #
